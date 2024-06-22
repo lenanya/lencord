@@ -199,11 +199,11 @@ class GCRV(RecycleView):
 
 class LenCordApp(App):
     sm: ScreenManager = ScreenManager()
-    token: str  # todo: fix so no file bullshit so i dont accidentally upload my token lmao
+    token: str  # todo: fix so no file bullshit so i dont accidentally upload my token lmaoo
     api: API
     current_chat: str
     # random placeholder so it doesnt kill itself during startup
-    current_guild: str = "1105880476738130082" 
+    current_guild: str = "1105880476738130082"  # what server even is this
     user_id: str
 
     # why are all of these functions what did i smoke
