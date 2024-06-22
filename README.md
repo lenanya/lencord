@@ -44,3 +44,6 @@ To run:
 
 
 oh man thats a long list of not working shit
+
+## Disclaimer
+I am working on this alone, but if you have improvement ideas i think that's what pull requests are for (i dont use github often)
