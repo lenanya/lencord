@@ -41,3 +41,6 @@ To run:
 - server info in general
 - reactions
 - dms only show username not display name and no profile picture
+
+
+oh man thats a long list of not working shit
