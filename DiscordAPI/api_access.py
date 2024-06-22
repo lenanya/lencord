@@ -10,6 +10,8 @@ def sort_by_last_message(channels: list) -> list:
     return sorted_list
 
 
+
+# this is not anything official i just named it that 
 class API:
 
     def __init__(self, token: str):
