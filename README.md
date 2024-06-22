@@ -16,6 +16,7 @@ To run:
 - server channels, aswell as existing dms
 
 ## Not Working
+- logging in with email and password (only token right now)
 - gifs
 - user profiles
 - role colors
