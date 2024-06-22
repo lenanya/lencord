@@ -216,7 +216,7 @@ class LenCordApp(App):
     def set_screen(self, screen: str):
         self.sm.current = screen
 
-    def get_token(self):
+    def get_token(self):  # really need to fix this
         with open("token", "r") as file:
             self.token = file.read()
 
