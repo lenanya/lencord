@@ -1,0 +1,43 @@
+#:import Message Widgets.message.Message
+
+<Message>:
+    orientation: 'horizontal'
+    height: self.minimum_height
+    spacing: 10
+    padding: 10
+    BoxLayout:
+        orientation: 'horizontal'
+        pos_hint: {'top': 1}
+        height: msg_box.height
+        width: img.width
+        size_hint: None, None
+        AsyncImage:
+            id: img
+            source: root.image_link
+            size_hint: None, None
+            size: root.width / 10, root.width / 10
+            fit_mode: 'scale-down'
+            pos_hint: {'top': 1}
+    BoxLayout:
+        id: msg_box
+        orientation: 'vertical'
+        pos_hint: {'top': 1}
+        height: msg.height + att.height
+        Button:
+            id: msg
+            halign: 'left'
+            valign: 'top'
+            text_size: root.width - img.width, None
+            size: self.texture_size
+            size_hint: None, None
+            text: root.reply + root.author + ":\n" + root.text
+            on_press: root.set_reply()
+            background_normal: ''
+            background_color: root.background_color
+        AsyncImage:
+            id: att
+            height: root.image_h
+            source: root.attachment_link
+            size_hint: None, None
+            width: root.width * 0.9
+            fit_mode: 'scale-down'

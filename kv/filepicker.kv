@@ -1,0 +1,18 @@
+<FilePicker@Popup>:
+    title: "Pick a file to upload"
+    size_hint: 0.75, 0.75
+    auto_dismiss: True
+    BoxLayout:
+        orientation: 'vertical'
+        FileChooserIconView:
+            filters: ['*.png', '*.jpg', '*.jpeg']
+            path: "C:/users/lena/Pictures"
+            multiselect: False
+            id: filechooser
+        Button:
+            size_hint_y: 0.25
+            text: filechooser.selection and filechooser.selection[0] or "Choose an image"
+            on_press:
+                app.channel_screen.attachment = filechooser.selection[0]
+                app.channel_screen.ids.attach.text = filechooser.selection[0]
+                root.dismiss()

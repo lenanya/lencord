@@ -1,0 +1,14 @@
+#:import Guild Widgets.guild.Guild
+
+<Guild>:
+    orientation: 'horizontal'
+    AsyncImage:
+        source: root.icon
+        size: 32, 32
+        size_hint: None, None
+        fit_mode: 'scale-down'
+        pos_hint: {'top': 1}
+    Button:
+        id: but
+        text: root.text
+        on_press: root.open_guild()
