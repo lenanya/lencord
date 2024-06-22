@@ -23,7 +23,7 @@ class API:
         direct_message_channels: list = response.json()
         sorted_direct_message_channels: list = sort_by_last_message(direct_message_channels)
         for channel in sorted_direct_message_channels:
-            channel['name'] = channel['recipients'][0]['username']
+            channel['name'] = channel['recipients'][0]['username'] # yeah i need to fix that
 
         return sorted_direct_message_channels
 
@@ -37,7 +37,8 @@ class API:
 
         return response.json()
 
-    @staticmethod
+    # we love spaghetti
+    @staticmethod  # what does this even do
     def get_referenced_message(message_reference: dict, messages: list) -> str:
         channel_id: str or None = message_reference.get('channel_id', None)
         message_id: str or None = message_reference.get('message_id', None)
@@ -55,6 +56,7 @@ class API:
         content: str = message.get('content', '')
         return f"Reply to \"{content[:20].replace("\n", " ")} . . .\" from: {author}\n"
 
+    # i do not like multipart/form >:(
     def send_message(self, channel_id: str, content: str, reply: dict or None = None, attachment: str or None = None):
         channel_url: str = f"https://discord.com/api/v10/channels/{channel_id}/messages"
         headers: dict = {"Authorization": self.token}
@@ -85,21 +87,22 @@ class API:
 
         _ = requests.post(channel_url, files=files, headers=headers)
 
+    # nice and simple
     def get_guilds(self) -> list:
-        # sleep(2)
+        # sleep(2) oops forgot that here but now its staying lol
         guilds_url: str = "https://discord.com/api/v10/users/@me/guilds"
         headers: dict = {"Authorization": self.token}
-        params: dict = {"with_count": True}
+        params: dict = {"with_count": True} # why, i never use the counts lol
         return requests.get(guilds_url, headers=headers, params=params).json()
 
     def get_guild_channels(self, guild_id: str) -> list:
         guild_channels_url: str = f"https://discord.com/api/v10/guilds/{guild_id}/channels"
         headers: dict = {"Authorization": self.token}
         guild_channels: list = requests.get(guild_channels_url, headers=headers).json()
-        return sorted(guild_channels, key=lambda x: x['position'])
-
+        return sorted(guild_channels, key=lambda x: x['position']) # lambda my beloved
+    
     def get_user_id(self) -> str:
         headers: dict = {"Authorization": self.token}
         user_url: str = "https://discord.com/api/v10/users/@me"
         response = requests.get(user_url, headers=headers).json()
-        return response.get('id', 'ERROR')
+        return response.get('id', 'ERROR') # lets hope that never returns 'ERROR' lol
