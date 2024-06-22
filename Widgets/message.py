@@ -14,5 +14,6 @@ class Message(BoxLayout):
     background_color: ColorProperty = ColorProperty()
     
     def set_reply(self):
-        App.get_running_app().drv.reply = {"reply_id": self.message_id, "reply_author": self.author}
+        # why did i make that a dict and not just 2 strings
+        App.get_running_app().drv.reply = {"reply_id": self.message_id, "reply_author": self.author} #
         App.get_running_app().drv.set_reply()
