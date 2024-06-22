@@ -199,7 +199,7 @@ class GCRV(RecycleView):
 
 class LenCordApp(App):
     sm: ScreenManager = ScreenManager()
-    token: str
+    token: str  # todo: fix so no file bullshit so i dont accidentally upload my token lol
     api: API
     current_chat: str
     # random placeholder so it doesnt kill itself during startup
