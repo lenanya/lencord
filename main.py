@@ -12,6 +12,7 @@ from Widgets.guild import Guild
 from Widgets.directmessagechannel import DirectMessageChannel
 
 
+# yes this needs to be here
 class DirectMessageListScreen(Screen):
     pass
 
@@ -20,6 +21,7 @@ class DMRV(RecycleView):
 
     def get_channels(self):
         dm_channels = App.get_running_app().api.get_direct_message_channels()
+        # i love list comprehensions
         data = [{'text': channel['name'], 'channel_id': channel['id']} for channel in dm_channels]
         self.data = data
 
@@ -46,6 +48,7 @@ class GRV(RecycleView):
         self.get_guilds()
 
 
+# oh boy
 class ChannelScreen(Screen):
 
     refresh_event: ClockEvent
@@ -63,6 +66,7 @@ class ChannelScreen(Screen):
         self.refresh_event = Clock.schedule_interval(App.get_running_app().drv.load_new_messages, 2)
         super().on_pre_enter(*args)
 
+    # i use App.get_running_app() way too much
     def send_message(self):
         message_content: str = self.ids.message_input.text
         if message_content == "" and not self.attachment:
@@ -85,6 +89,7 @@ class ChannelScreen(Screen):
         App.get_running_app().channel_screen = self
 
 
+# i should really standardise the recycleviews
 class DRV(RecycleView):
 
     messages: list
@@ -99,8 +104,9 @@ class DRV(RecycleView):
         else:
             App.get_running_app().channel_screen.ids.reply.text = ""
 
+    # *args needs to be there cuz it gets called by Clock with random arguments which caused problems
     def get_messages(self, *args):
-        _ = args
+        _ = args  # so i just void it here :3
         self.messages = App.get_running_app().api.get_channel_messages(App.get_running_app().current_chat, 100)
         if not self.messages:
             return None
@@ -108,7 +114,7 @@ class DRV(RecycleView):
             return None
         self.newest_message_id = self.messages[0]['id']
         self.update_data()
-
+    
     def update_data(self):
         messages: list = self.messages
         data: list = []
@@ -123,6 +129,7 @@ class DRV(RecycleView):
             msg_id: str = message['id']
             img: str = f"https://cdn.discordapp.com/avatars/{message['author']['id']}/{message['author']['avatar']}"
             img_h: int = 0
+            # placeholder cuz something needs to be there
             att: str = ("https://cdn.discordapp.com/attachments/1143229203551096842/1252962153556611173"
                         "/Screenshot_20240619_142408_Pydroid_3.jpg?ex=6674c830&is=667376b0&hm"
                         "=13e97ac0b5ac6391dc957f1a0a96cb04bb7a2dfe1750c4b14559937585f4108f&")
@@ -137,6 +144,7 @@ class DRV(RecycleView):
                     img_h = attachment.get('height', 0)
                     img_w = attachment.get('width', None)
 
+                    # this doesnt actually do what its supposed to, image scaling is fucked
                     if img_w:
                         ratio = img_w / (self.width * 0.9)
                         img_h = img_h / ratio
@@ -146,6 +154,7 @@ class DRV(RecycleView):
                          'image_h': img_h, 'attachment_link': att, 'background_color': bgcol})
         self.data = data
 
+    # i love voiding args
     def load_new_messages(self, *args):
         _ = args
         new_messages: list or None
@@ -165,12 +174,14 @@ class DRV(RecycleView):
         super().__init__(**kwargs)
 
 
+# tried putting this in its own file but it just completely broke lol
 class GuildChannelListScreen(Screen):
     def on_pre_enter(self, *args):
         App.get_running_app().gcrv.get_channels()
         super().on_pre_enter(*args)
 
 
+# you can never have enough recycleviews (i hate them)
 class GCRV(RecycleView):
 
     def get_channels(self):
@@ -190,9 +201,11 @@ class LenCordApp(App):
     token: str
     api: API
     current_chat: str
-    current_guild: str = "1105880476738130082"
+    # random placeholder so it doesnt kill itself during startup
+    current_guild: str = "1105880476738130082" 
     user_id: str
-    
+
+    # why are all of these functions what did i smoke
     def set_channel(self, channel_id: str):
         self.current_chat = channel_id
     
@@ -219,8 +232,8 @@ class LenCordApp(App):
         self.sm.add_widget(DirectMessageListScreen(name="dmlist"))
         self.sm.add_widget(ChannelScreen(name='channel'))
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
-        self.sm.current = 'dmlist'
-        Clock.max_iteration = 100
+        self.sm.current = 'dmlist' # todo: rename that fuckin screen 
+        Clock.max_iteration = 100 # idk, images still fuck up the layout lol
 
         return self.sm
 
