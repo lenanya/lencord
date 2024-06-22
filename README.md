@@ -3,7 +3,7 @@ A custom Discord Client written in Python using the kivy library for UI (VERY wi
 
 To run:
 - install python 3.12
-- install kivy, requests (pip install kivy, requests)
+- install requirements using `pip install -r requirements.txt`
 - insert your discord token in the file named 'token' (ik ik sus but its open source you can read all the code)
 - run main.py
 
