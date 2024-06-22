@@ -234,7 +234,7 @@ class LenCordApp(App):
         self.sm.add_widget(ChannelScreen(name='channel'))
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
         self.sm.current = 'dmlist'  # todo: rename that fuckin screen
-        Clock.max_iteration = 100  # idk, images still fuck up the layout lol
+        Clock.max_iteration = 100  # idk, images still fuck up the layout lol test
 
         return self.sm
 
