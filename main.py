@@ -122,14 +122,14 @@ class DRV(RecycleView):
         for message in messages:
             auth: str or None = message['author'].get('global_name', None)
             if not auth:
-                auth = message['author'].get('username', 'UNKNOWN_USER_ERROR')
+                auth = message['author'].get('username', 'UNKNOWN_USER_ERROR')  # i hate json
             txt: str = message.get('content', '')
             message_reference: dict = message.get('message_reference', {})
             reply: str = App.get_running_app().api.get_referenced_message(message_reference, messages)
             msg_id: str = message['id']
             img: str = f"https://cdn.discordapp.com/avatars/{message['author']['id']}/{message['author']['avatar']}"
             img_h: int = 0
-            # placeholder cuz something needs to be there
+            # placeholder cuz something needs to be there idk
             att: str = ("https://cdn.discordapp.com/attachments/1143229203551096842/1252962153556611173"
                         "/Screenshot_20240619_142408_Pydroid_3.jpg?ex=6674c830&is=667376b0&hm"
                         "=13e97ac0b5ac6391dc957f1a0a96cb04bb7a2dfe1750c4b14559937585f4108f&")
@@ -145,6 +145,7 @@ class DRV(RecycleView):
                     img_w = attachment.get('width', None)
 
                     # this doesnt actually do what its supposed to, image scaling is fucked
+                    # todo: fix
                     if img_w:
                         ratio = img_w / (self.width * 0.9)
                         img_h = img_h / ratio
@@ -157,7 +158,7 @@ class DRV(RecycleView):
     # i love voiding args
     def load_new_messages(self, *args):
         _ = args
-        new_messages: list or None
+        new_messages: list or None  # "or None" is my saviour
         chat = App.get_running_app().current_chat
         if not self.messages:
             new_messages = App.get_running_app().api.get_channel_messages(chat, 10)
@@ -171,7 +172,7 @@ class DRV(RecycleView):
 
     def __init__(self, **kwargs):
         App.get_running_app().drv = self
-        super().__init__(**kwargs)
+        super().__init__(**kwargs)  # i dont like super().__init__() idk why
 
 
 # tried putting this in its own file but it just completely broke lol
