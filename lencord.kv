@@ -1,0 +1,97 @@
+#:include kv/message.kv
+#:include kv/directmessagechannel.kv
+#:include kv/guild.kv
+#:include kv/guildchannel.kv
+#:include kv/filepicker.kv
+
+<DirectMessageListScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: "Guilds"
+                size_hint_y: 0.2
+            GRV:
+                viewclass: 'Guild'
+                RecycleBoxLayout:
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: "Direct Messages"
+                size_hint_y: 0.2
+            DMRV:
+                viewclass: 'DirectMessageChannel'
+                RecycleBoxLayout:
+                    default_size: None, dp(56)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+
+<ChannelScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        DRV:
+            id: drv
+            viewclass: 'Message'
+            RecycleBoxLayout:
+                spacing: root.height / 20
+                padding: 10
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+        BoxLayout:
+            id: bar
+            orientation: 'vertical'
+            size_hint_y: 0.2
+            spacing: 5
+            BoxLayout:
+                size_hint_y: 0.2
+                orientation: 'horizontal'
+                Button:
+                    id: attach
+                    text_size: root.width / 2, None
+                    text: "Attach image"
+                    halign: 'center'
+                    on_press:
+                        root.file_chooser()
+                Button:
+                    id: reply
+                    text_size: root.width / 2, None
+                    halign: 'center'
+                    on_press:
+                        drv.reply = None
+                        drv.set_reply()
+            BoxLayout:
+                orientation: 'horizontal'
+                Button:
+                    size_hint_x: 0.25
+                    text: "Back"
+                    on_press: app.sm.current = 'dmlist'
+                TextInput:
+                    id: message_input
+                    text_hint: "Enter a message"
+                Button:
+                    size_hint_x: 0.25
+                    text: "Send"
+                    on_press: root.send_message()
+
+<GuildChannelListScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        GCRV:
+            viewclass: 'GuildChannel'
+            RecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
