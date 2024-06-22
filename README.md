@@ -28,6 +28,9 @@ To run:
 - images arent scaled correctly yet
 - emoji
 - mentions
+- server nicknames
+- jumping to replies
+- editing, deleting messages
 - adding friends, removing friends
 - updating your profile
 - settings
@@ -36,3 +39,5 @@ To run:
 - creating servers
 - leaving servers
 - server info in general
+- reactions
+- dms only show username not display name and no profile picture
