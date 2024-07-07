@@ -197,9 +197,13 @@ class GCRV(RecycleView):
         self.get_channels()
 
 
+class LoginScreen(Screen):
+    pass
+
+
 class LenCordApp(App):
     sm: ScreenManager = ScreenManager()
-    token: str  # todo: fix so no file bullshit so i dont accidentally upload my token lmaoo
+    token: str
     api: API
     current_chat: str
     # random placeholder so it doesnt kill itself during startup
@@ -226,14 +230,16 @@ class LenCordApp(App):
     def get_id(self):
         self.user_id = self.api.get_user_id()
 
-    def build(self):
-        self.get_token()
+    def get_ready(self):
         self.get_api()
         self.get_id()
         self.sm.add_widget(DirectMessageListScreen(name="dmlist"))
         self.sm.add_widget(ChannelScreen(name='channel'))
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
-        self.sm.current = 'dmlist'  # todo: rename that fuckin screen
+
+    def build(self):
+        self.sm.add_widget(LoginScreen(name='login'))
+        self.sm.current = 'login'
         Clock.max_iteration = 100  # idk, images still fuck up the layout lol
 
         return self.sm

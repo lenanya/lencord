@@ -96,3 +96,17 @@
                 size_hint_y: None
                 height: self.minimum_height
                 orientation: 'vertical'
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: token
+            multiline: False
+            text_hint: 'Put your token here'
+        Button:
+            on_press:
+                app.token = token.text
+                app.get_ready()
+                app.sm.current = 'dmlist'
+            text: 'Login'
