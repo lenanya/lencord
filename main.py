@@ -52,7 +52,7 @@ class GRV(RecycleView):
 class ChannelScreen(Screen):
 
     refresh_event: ClockEvent
-    attachment: str or None = None
+    attachment: str|None = None
 
     def file_chooser(self):
         if self.attachment:
@@ -94,7 +94,7 @@ class DRV(RecycleView):
 
     messages: list
     newest_message_id: str
-    reply: dict = None
+    reply: dict|None = None
 
     def set_reply(self):
         texture_size = App.get_running_app().channel_screen.ids.reply.texture_size
@@ -120,7 +120,7 @@ class DRV(RecycleView):
         data: list = []
 
         for message in messages:
-            auth: str or None = message['author'].get('global_name', None)
+            auth: str|None = message['author'].get('global_name', None)
             if not auth:
                 auth = message['author'].get('username', 'UNKNOWN_USER_ERROR')  # i hate json
             txt: str = message.get('content', '')
@@ -158,7 +158,7 @@ class DRV(RecycleView):
     # i love voiding args
     def load_new_messages(self, *args):
         _ = args
-        new_messages: list or None  # "or None" is my saviour
+        new_messages: list|None  # "or None" is my saviour
         chat = App.get_running_app().current_chat
         if not self.messages:
             new_messages = App.get_running_app().api.get_channel_messages(chat, 10)

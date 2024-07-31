@@ -29,7 +29,7 @@ class API:
 
         return sorted_direct_message_channels
 
-    def get_channel_messages(self, channel_id: str, amount: int, after: str or None = None) -> list:
+    def get_channel_messages(self, channel_id: str, amount: int, after: str|None = None) -> list:
         messages_url: str = f"https://discord.com/api/v10/channels/{channel_id}/messages"
         headers: dict = {"Authorization": self.token}
         params: dict = {"limit": amount}
@@ -42,17 +42,17 @@ class API:
     # we love spaghetti
     @staticmethod  # what does this even do
     def get_referenced_message(message_reference: dict, messages: list) -> str:
-        channel_id: str or None = message_reference.get('channel_id', None)
-        message_id: str or None = message_reference.get('message_id', None)
+        channel_id: str|None = message_reference.get('channel_id', None)
+        message_id: str|None = message_reference.get('message_id', None)
         if not channel_id or not message_id:
             return ''
-        message: dict or None = None
+        message: dict|None = None
         for i in messages:
             if i.get('id', '') == message_id:
                 message = i
         if not message:
             return "Replies to unloaded message\n"
-        author: str or None = message['author'].get('global_name', None)
+        author: str|None = message['author'].get('global_name', None)
         if not author:
             author = message['author'].get('username', 'NO_USERNAME_ERROR')
         content: str = message.get('content', '')
@@ -60,7 +60,7 @@ class API:
         return f"Reply to \"{msg_reply} . . .\" from: {author}\n"
 
     # i do not like multipart/form >:(
-    def send_message(self, channel_id: str, content: str, reply: dict or None = None, attachment: str or None = None):
+    def send_message(self, channel_id: str, content: str, reply: dict|None = None, attachment: str|None = None):
         channel_url: str = f"https://discord.com/api/v10/channels/{channel_id}/messages"
         headers: dict = {"Authorization": self.token}
 

@@ -4,3 +4,4 @@
 venv/
 DiscordAPI/__pycache__/
 Widgets/__pycache__/
+.vscode/
