@@ -56,7 +56,8 @@ class API:
         if not author:
             author = message['author'].get('username', 'NO_USERNAME_ERROR')
         content: str = message.get('content', '')
-        return f"Reply to \"{content[:20].replace("\n", " ")} . . .\" from: {author}\n"
+        msg_reply: str = content[:20].replace("\n", " ")
+        return f"Reply to \"{msg_reply} . . .\" from: {author}\n"
 
     # i do not like multipart/form >:(
     def send_message(self, channel_id: str, content: str, reply: dict or None = None, attachment: str or None = None):
