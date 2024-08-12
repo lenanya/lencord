@@ -26,6 +26,7 @@ class API:
         sorted_direct_message_channels: list = sort_by_last_message(direct_message_channels)
         for channel in sorted_direct_message_channels:
             channel['name'] = channel['recipients'][0]['username']  # yeah i need to fix that
+            # TODO: fix
 
         return sorted_direct_message_channels
 
@@ -39,7 +40,8 @@ class API:
 
         return response.json()
 
-    # we love spaghetti
+    # we love spaghetti edit: no we dont
+    # TODO: refactor
     @staticmethod  # what does this even do
     def get_referenced_message(message_reference: dict, messages: list) -> str:
         channel_id: str|None = message_reference.get('channel_id', None)
@@ -116,6 +118,7 @@ class API:
         user_url: str = "https://discord.com/api/v10/users/@me"
         response = requests.get(user_url, headers=headers).json()
         return response.get('id', 'ERROR')  # lets hope that never returns 'ERROR' lol
+        # TODO: handle errors bruh
 
     def get_user(self, user_id: str) -> dict:
         headers: dict = {"Authorization": self.token}

@@ -24,6 +24,7 @@ class LoginScreen(Screen):
 
 class DMRV(RecycleView):
 
+    #TODO: refactor to use get
     def get_channels(self):
         dm_channels = App.get_running_app().api.get_direct_message_channels()
         # i love list comprehensions
@@ -37,6 +38,7 @@ class DMRV(RecycleView):
 
 class GRV(RecycleView):
 
+    #TODO: refactor to use get
     def get_guilds(self):
         guilds: list = App.get_running_app().api.get_guilds()
         icon_url: str = "https://cdn.discordapp.com/icons/"
@@ -71,7 +73,7 @@ class ChannelScreen(Screen):
         self.refresh_event = Clock.schedule_interval(App.get_running_app().drv.load_new_messages, 2)
         super().on_pre_enter(*args)
 
-    # i use App.get_running_app() way too much
+    # i use App.get_running_app() way too much edit: yep
     def send_message(self):
         message_content: str = self.ids.message_input.text
         if message_content == "" and not self.attachment:
@@ -94,7 +96,7 @@ class ChannelScreen(Screen):
         App.get_running_app().channel_screen = self
 
 
-# i should really standardise the recycleviews
+# i should really standardise the recycleviews edit: yep
 class DRV(RecycleView):
 
     messages: list
@@ -137,7 +139,7 @@ class DRV(RecycleView):
             msg_id: str = message['id']
             img: str = f"https://cdn.discordapp.com/avatars/{message['author']['id']}/{message['author']['avatar']}"
             img_h: int = 0
-            # placeholder cuz something needs to be there idk
+            # placeholder cuz something needs to be there idk edit: why
             # TODO: fix
             att: str = ("https://cdn.discordapp.com/attachments/1143229203551096842/1252962153556611173"
                         "/Screenshot_20240619_142408_Pydroid_3.jpg?ex=6674c830&is=667376b0&hm"
@@ -167,7 +169,7 @@ class DRV(RecycleView):
     # i love voiding args
     def load_new_messages(self, *args):
         _ = args
-        new_messages: list|None  # "or None" is my saviour
+        new_messages: list|None  # "or None" is my saviour edit: its |None lol
         chat = App.get_running_app().current_chat
         if not self.messages:
             new_messages = App.get_running_app().api.get_channel_messages(chat, 10)
@@ -213,10 +215,10 @@ class LenCordApp(App):
     current_chat: str
     # random placeholder so it doesnt kill itself during startup
     # TODO: fix
-    current_guild: str = "1105880476738130082"  # what server even is this
+    current_guild: str = "1105880476738130082"  # what server even is this edit: its mine
     user_id: str
 
-    # why are all of these functions what did i smoke
+    # why are all of these functions what did i smoke edit: you drank
     def set_channel(self, channel_id: str):
         self.current_chat = channel_id
     
