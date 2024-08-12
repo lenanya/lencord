@@ -20,7 +20,7 @@ To run:
 ## Not Working
 - logging in with email and password (only token right now)
 - gifs
-- ~~-user profiles~~
+- ~~-user profiles~~ worked on
 - role colors
 - permissions
 - files other than images (both uploading them and seeing them)
