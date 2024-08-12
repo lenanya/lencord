@@ -97,7 +97,13 @@ class API:
         headers: dict = {"Authorization": self.token}
         params: dict = {"with_count": True}  # why, i never use the counts lol
         return requests.get(guilds_url, headers=headers, params=params).json()
-
+    
+    def get_guild(self, guild_id: str) -> dict:
+        guild_url: str = f"https://discord.com/api/v10/guilds/{guild_id}"
+        headers: dict = {"Authorization": self.token}
+        params: dict = {"with_counts": True}
+        return requests.get(guild_url, headers=headers, params=params).json()
+        
     def get_guild_channels(self, guild_id: str) -> list:
         guild_channels_url: str = f"https://discord.com/api/v10/guilds/{guild_id}/channels"
         headers: dict = {"Authorization": self.token}
@@ -109,3 +115,9 @@ class API:
         user_url: str = "https://discord.com/api/v10/users/@me"
         response = requests.get(user_url, headers=headers).json()
         return response.get('id', 'ERROR')  # lets hope that never returns 'ERROR' lol
+
+    def get_user(self, user_id: str) -> dict:
+        headers: dict = {"Authorization": self.token}
+        user_url: str = f"https://discord.com/api/v10/users/{user_id}"
+        return requests.get(user_url, headers=headers).json()
+        

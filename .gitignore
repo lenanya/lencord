@@ -5,3 +5,6 @@ venv/
 DiscordAPI/__pycache__/
 Widgets/__pycache__/
 .vscode/
+/testing
+tests.py
+.gitignore

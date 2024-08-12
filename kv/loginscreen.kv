@@ -1,0 +1,15 @@
+<LoginScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: token
+            multiline: False
+            text_hint: 'Put your token here'
+            password: True
+            password_mask: '#'
+        Button:
+            on_press:
+                app.token = token.text
+                app.get_ready()
+                app.sm.current = 'dmlist'
+            text: 'Login'
