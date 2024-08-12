@@ -1,5 +1,5 @@
 # lencord
-A custom Discord Client written in Python using the kivy library for UI (VERY wip)
+A custom Discord Client written in Python using the kivy library for UI (VERY WIP)
 
 To run:
 - install python 3.12
