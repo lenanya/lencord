@@ -5,11 +5,11 @@ from kivy.app import App
 
 class Guild(BoxLayout):
     text: StringProperty = StringProperty()
-    guild_id: StringProperty = StringProperty()
+    guildId: StringProperty = StringProperty()
     icon: StringProperty = StringProperty()
     members: NumericProperty = NumericProperty()
     online: NumericProperty = NumericProperty()
 
-    def open_guild(self) -> None:
-        App.get_running_app().set_guild(self.guild_id)
-        App.get_running_app().set_screen('guild')
+    def openGuild(self) -> None:
+        App.get_running_app().setGuild(self.guildId)
+        App.get_running_app().setScreen('guild')

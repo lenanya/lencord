@@ -9,37 +9,37 @@
     BoxLayout:
         orientation: 'horizontal'
         pos_hint: {'top': 1}
-        height: msg_box.height
+        height: msgBox.height
         width: img.width
         size_hint: None, None
         # TODO: add profiles
         AsyncImage:
             id: img
-            source: root.image_link
+            source: root.imageLink
             size_hint: None, None
             size: root.width / 10, root.width / 10
             fit_mode: 'scale-down'
             pos_hint: {'top': 1}
     BoxLayout:
-        id: msg_box
+        id: msgBox
         orientation: 'vertical'
         pos_hint: {'top': 1}
-        height: msg.height + att.height
+        height: message.height + attachment.height
         Button:
-            id: msg
+            id: message
             halign: 'left'
             valign: 'top'
             text_size: root.width - img.width, None
             size: self.texture_size
             size_hint: None, None
             text: root.reply + root.author + ":\n" + root.text
-            on_press: root.set_reply()
+            on_press: root.setReply()
             background_normal: ''
-            background_color: root.background_color
+            background_color: root.backgroundColor
         AsyncImage:
-            id: att
-            height: root.image_h
-            source: root.attachment_link
+            id: attachment
+            height: root.imageHeight
+            source: root.attachmentLink
             size_hint: None, None
             width: root.width * 0.9
             fit_mode: 'scale-down'

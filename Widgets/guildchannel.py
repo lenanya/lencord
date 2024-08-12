@@ -5,10 +5,10 @@ from kivy.app import App
 
 class GuildChannel(BoxLayout):
     text: StringProperty = StringProperty()
-    channel_id: StringProperty = StringProperty()
+    channelId: StringProperty = StringProperty()
     type: NumericProperty = NumericProperty()
     
-    def open_channel(self) -> None:
-        App.get_running_app().set_channel(self.channel_id)
-        App.get_running_app().set_screen('channel')
+    def openChannel(self) -> None:
+        App.get_running_app().setChannel(self.channelId)
+        App.get_running_app().setScreen('channel')
         

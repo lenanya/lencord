@@ -9,12 +9,12 @@
             #oops forgot that here
             #path: "C:/users/lena/Pictures" 
             multiselect: False
-            id: filechooser
+            id: fileChooser
         Button:
             size_hint_y: 0.25
-            text: filechooser.selection and filechooser.selection[0] or "Choose an image"
+            text: fileChooser.selection and fileChooser.selection[0] or "Choose an image"
             on_press:
-                app.channel_screen.attachment = filechooser.selection[0]
-                app.channel_screen.ids.attach.text = filechooser.selection[0]
+                app.channelScreen.attachment = fileChooser.selection[0]
+                app.channelScreen.ids.attach.text = fileChooser.selection[0]
                 root.dismiss()
 # i fucking LOVE boxlayouts

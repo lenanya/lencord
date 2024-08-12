@@ -2,12 +2,12 @@ import requests
 import json
 
 
-def sort_by_last_message(channels: list) -> list:
+def sortByLastMessage(channels: list) -> list:
     removed: list = [channel for channel in channels if channel['last_message_id'] is None]
-    null_removed_channels: list = [channel for channel in channels if channel['last_message_id'] is not None]
-    sorted_list: list = sorted(null_removed_channels, key=lambda x: x['last_message_id'], reverse=True)
-    sorted_list.extend(removed)
-    return sorted_list
+    nullRemovedChannels: list = [channel for channel in channels if channel['last_message_id'] is not None]
+    sortedList: list = sorted(nullRemovedChannels, key=lambda x: x['last_message_id'], reverse=True)
+    sortedList.extend(removed)
+    return sortedList
 
 
 
@@ -17,21 +17,21 @@ class API:
     def __init__(self, token: str):
         self.token: str = token
 
-    def get_direct_message_channels(self) -> list:
-        channels_url: str = "https://discord.com/api/v10/users/@me/channels"
+    def getDirectMessageChannels(self) -> list:
+        channelsURL: str = "https://discord.com/api/v10/users/@me/channels"
         headers: dict = {"Authorization": self.token}
-        response = requests.get(channels_url, headers=headers)
+        response = requests.get(channelsURL, headers=headers)
 
-        direct_message_channels: list = response.json()
-        sorted_direct_message_channels: list = sort_by_last_message(direct_message_channels)
-        for channel in sorted_direct_message_channels:
+        directMessageChannels: list = response.json()
+        sortedDirectMessageChannels: list = sortByLastMessage(directMessageChannels)
+        for channel in sortedDirectMessageChannels:
             channel['name'] = channel['recipients'][0]['username']  # yeah i need to fix that
             # TODO: fix
 
-        return sorted_direct_message_channels
+        return sortedDirectMessageChannels
 
-    def get_channel_messages(self, channel_id: str, amount: int, after: str|None = None) -> list:
-        messages_url: str = f"https://discord.com/api/v10/channels/{channel_id}/messages"
+    def getChannelMessages(self, channelId: str, amount: int, after: str|None = None) -> list:
+        messages_url: str = f"https://discord.com/api/v10/channels/{channelId}/messages"
         headers: dict = {"Authorization": self.token}
         params: dict = {"limit": amount}
         if after:
@@ -43,14 +43,14 @@ class API:
     # we love spaghetti edit: no we dont
     # TODO: refactor
     @staticmethod  # what does this even do
-    def get_referenced_message(message_reference: dict, messages: list) -> str:
-        channel_id: str|None = message_reference.get('channel_id', None)
-        message_id: str|None = message_reference.get('message_id', None)
-        if not channel_id or not message_id:
+    def getReferencedMessage(messageReference: dict, messages: list) -> str:
+        channelId: str|None = messageReference.get('channel_id', None)
+        messageId: str|None = messageReference.get('message_id', None)
+        if not channelId or not messageId:
             return ''
         message: dict|None = None
         for i in messages:
-            if i.get('id', '') == message_id:
+            if i.get('id', '') == messageId:
                 message = i
         if not message:
             return "Replies to unloaded message\n"
@@ -58,72 +58,72 @@ class API:
         if not author:
             author = message['author'].get('username', 'NO_USERNAME_ERROR')
         content: str = message.get('content', '')
-        msg_reply: str = content[:20].replace("\n", " ")
-        return f"Reply to \"{msg_reply} . . .\" from: {author}\n"
+        messageReply: str = content[:20].replace("\n", " ")
+        return f"Reply to \"{messageReply} . . .\" from: {author}\n"
 
     # i do not like multipart/form >:(
-    def send_message(self, channel_id: str, content: str, reply: dict|None = None, attachment: str|None = None):
-        channel_url: str = f"https://discord.com/api/v10/channels/{channel_id}/messages"
+    def sendMessage(self, channelId: str, content: str, reply: dict|None = None, attachment: str|None = None):
+        channelURL: str = f"https://discord.com/api/v10/channels/{channelId}/messages"
         headers: dict = {"Authorization": self.token}
 
-        json_payload: dict = {
+        jsonPayload: dict = {
             'content': content
         }
 
         if reply:
-            json_payload['message_reference'] = {"message_id": reply['reply_id']}
+            jsonPayload['message_reference'] = {"message_id": reply['reply_id']}
 
         if attachment:
-            file_path: str = attachment
-            file_name: str = file_path[-file_path[::-1].find("/"):]
-            file_extension: str = file_name[-file_name[::-1].find("."):]
-            json_payload['embeds'] = [{'title': 'image', 'thumbnail': {'url': f"attachment://{file_name}"},
-                                       'image': {'url': f"attachment://{file_name}"}}]
-            json_payload['attachments'] = [{'id': 0, 'filename': file_name}]
-            with open(file_path, 'rb') as file:
-                file_data: bytes = file.read()
+            filePath: str = attachment
+            fileName: str = filePath[-filePath[::-1].find("/"):]
+            fileExtension: str = fileName[-fileName[::-1].find("."):]
+            jsonPayload['embeds'] = [{'title': 'image', 'thumbnail': {'url': f"attachment://{fileName}"},
+                                       'image': {'url': f"attachment://{fileName}"}}]
+            jsonPayload['attachments'] = [{'id': 0, 'filename': fileName}]
+            with open(filePath, 'rb') as file:
+                fileData: bytes = file.read()
 
             files = (
-                ("payload_json", (None, json.dumps(json_payload), "application/json")),
-                ("files[0]", (file_name, file_data, f"image/{file_extension}"))
+                ("payload_json", (None, json.dumps(jsonPayload), "application/json")),
+                ("files[0]", (fileName, fileData, f"image/{fileExtension}"))
             )
         else:
-            files = {"payload_json": (None, json.dumps(json_payload), "application/json")}
+            files = {"payload_json": (None, json.dumps(jsonPayload), "application/json")}
 
-        _ = requests.post(channel_url, files=files, headers=headers) # TODO: refactor
+        _ = requests.post(channelURL, files=files, headers=headers) # TODO: refactor
 
     # nice and simple
-    def get_guilds(self) -> list:
+    def getGuilds(self) -> list:
         # sleep(2) oops forgot that here but now its staying lol
-        guilds_url: str = "https://discord.com/api/v10/users/@me/guilds"
+        guildsURL: str = "https://discord.com/api/v10/users/@me/guilds"
         headers: dict = {"Authorization": self.token}
         params: dict = {"with_count": True}  # why, i never use the counts lol
-        return requests.get(guilds_url, headers=headers, params=params).json()
+        return requests.get(guildsURL, headers=headers, params=params).json()
     
-    def get_guild(self, guild_id: str) -> dict:
-        guild_url: str = f"https://discord.com/api/v10/guilds/{guild_id}"
+    def getGuild(self, guildId: str) -> dict:
+        guildURL: str = f"https://discord.com/api/v10/guilds/{guildId}"
         headers: dict = {"Authorization": self.token}
         params: dict = {"with_counts": True}
-        return requests.get(guild_url, headers=headers, params=params).json()
+        return requests.get(guildURL, headers=headers, params=params).json()
         
     # TODO: fix order
-    def get_guild_channels(self, guild_id: str) -> list:
-        guild_channels_url: str = f"https://discord.com/api/v10/guilds/{guild_id}/channels"
+    def getGuildChannels(self, guildId: str) -> list:
+        guildChannelsURL: str = f"https://discord.com/api/v10/guilds/{guildId}/channels"
         headers: dict = {"Authorization": self.token}
-        guild_channels: list = requests.get(guild_channels_url, headers=headers).json()
-        return sorted(guild_channels, key=lambda x: x['position'])  # lambda my beloved
+        guildChannels: list = requests.get(guildChannelsURL, headers=headers).json()
+        return sorted(guildChannels, key=lambda x: x['position'])  # lambda my beloved
     
-    def get_user_id(self) -> str:
+    def getUserId(self) -> str:
         headers: dict = {"Authorization": self.token}
-        user_url: str = "https://discord.com/api/v10/users/@me"
-        response = requests.get(user_url, headers=headers).json()
+        userURL: str = "https://discord.com/api/v10/users/@me"
+        response = requests.get(userURL, headers=headers).json()
         return response.get('id', 'ERROR')  # lets hope that never returns 'ERROR' lol
         # TODO: handle errors bruh
 
-    def get_user(self, user_id: str) -> dict:
+    def getUser(self, userId: str) -> dict:
         headers: dict = {"Authorization": self.token}
-        user_url: str = f"https://discord.com/api/v10/users/{user_id}"
-        return requests.get(user_url, headers=headers).json()
+        userURL: str = f"https://discord.com/api/v10/users/{userId}"
+        return requests.get(userURL, headers=headers).json()
     
     # TODO: start dms 
     # TODO: send friend requests 

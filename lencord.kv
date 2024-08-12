@@ -64,14 +64,14 @@
                     text: "Attach image"
                     halign: 'center'
                     on_press:
-                        root.file_chooser()
+                        root.fileChooser()
                 Button:
                     id: reply
                     text_size: root.width / 2, None
                     halign: 'center'
                     on_press:
                         drv.reply = None
-                        drv.set_reply()
+                        drv.setReply()
             BoxLayout:
                 orientation: 'horizontal'
                 Button:
@@ -79,12 +79,12 @@
                     text: "Back"
                     on_press: app.sm.current = 'dmlist'
                 TextInput:
-                    id: message_input
+                    id: messageInput
                     text_hint: "Enter a message"
                 Button:
                     size_hint_x: 0.25
                     text: "Send"
-                    on_press: root.send_message()
+                    on_press: root.sendMessage()
 
 <GuildChannelListScreen>:
     BoxLayout:
