@@ -14,10 +14,13 @@ To run:
 - messages that mention you are highlighted
 - server channels, aswell as existing dms
 
+## Currently Worked On
+- user profiles
+
 ## Not Working
 - logging in with email and password (only token right now)
 - gifs
-- user profiles
+- ~~-user profiles~~
 - role colors
 - permissions
 - files other than images (both uploading them and seeing them)
