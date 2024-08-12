@@ -88,7 +88,7 @@ class API:
         else:
             files = {"payload_json": (None, json.dumps(json_payload), "application/json")}
 
-        _ = requests.post(channel_url, files=files, headers=headers)
+        _ = requests.post(channel_url, files=files, headers=headers) # TODO: refactor
 
     # nice and simple
     def get_guilds(self) -> list:
@@ -104,6 +104,7 @@ class API:
         params: dict = {"with_counts": True}
         return requests.get(guild_url, headers=headers, params=params).json()
         
+    # TODO: fix order
     def get_guild_channels(self, guild_id: str) -> list:
         guild_channels_url: str = f"https://discord.com/api/v10/guilds/{guild_id}/channels"
         headers: dict = {"Authorization": self.token}
@@ -120,4 +121,8 @@ class API:
         headers: dict = {"Authorization": self.token}
         user_url: str = f"https://discord.com/api/v10/users/{user_id}"
         return requests.get(user_url, headers=headers).json()
-        
+    
+    # TODO: start dms 
+    # TODO: send friend requests 
+    # TODO: join guilds 
+    # TODO: admin stuff?

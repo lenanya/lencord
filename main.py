@@ -17,6 +17,11 @@ class DirectMessageListScreen(Screen):
     pass
 
 
+# this too
+class LoginScreen(Screen):
+    pass
+
+
 class DMRV(RecycleView):
 
     def get_channels(self):
@@ -98,6 +103,7 @@ class DRV(RecycleView):
 
     def set_reply(self):
         texture_size = App.get_running_app().channel_screen.ids.reply.texture_size
+        # what the fuck
         App.get_running_app().channel_screen.ids.reply.size = texture_size if self.reply else (0, 0)
         if self.reply:
             App.get_running_app().channel_screen.ids.reply.text = "Replying to: " + self.reply['reply_author']
@@ -107,6 +113,7 @@ class DRV(RecycleView):
     # *args needs to be there cuz it gets called by Clock with random arguments which caused problems
     def get_messages(self, *args):
         _ = args  # so i just void it here :3
+        # what is it with these long ahh lines
         self.messages = App.get_running_app().api.get_channel_messages(App.get_running_app().current_chat, 100)
         if not self.messages:
             return None
@@ -115,6 +122,7 @@ class DRV(RecycleView):
         self.newest_message_id = self.messages[0]['id']
         self.update_data()
     
+    # TODO: refactor for readability
     def update_data(self):
         messages: list = self.messages
         data: list = []
@@ -130,6 +138,7 @@ class DRV(RecycleView):
             img: str = f"https://cdn.discordapp.com/avatars/{message['author']['id']}/{message['author']['avatar']}"
             img_h: int = 0
             # placeholder cuz something needs to be there idk
+            # TODO: fix
             att: str = ("https://cdn.discordapp.com/attachments/1143229203551096842/1252962153556611173"
                         "/Screenshot_20240619_142408_Pydroid_3.jpg?ex=6674c830&is=667376b0&hm"
                         "=13e97ac0b5ac6391dc957f1a0a96cb04bb7a2dfe1750c4b14559937585f4108f&")
@@ -145,7 +154,7 @@ class DRV(RecycleView):
                     img_w = attachment.get('width', None)
 
                     # this doesnt actually do what its supposed to, image scaling is fucked
-                    # todo: fix
+                    # TODO: fix
                     if img_w:
                         ratio = img_w / (self.width * 0.9)
                         img_h = img_h / ratio
@@ -168,7 +177,7 @@ class DRV(RecycleView):
             self.messages = new_messages + self.messages
             self.messages = self.messages[:100]
             self.newest_message_id = self.messages[0]['id']
-            self.update_data()
+            self.update_data() # TODO: refactor for readability
 
     def __init__(self, **kwargs):
         App.get_running_app().drv = self
@@ -185,7 +194,7 @@ class GuildChannelListScreen(Screen):
 # you can never have enough recycleviews (i hate them)
 class GCRV(RecycleView):
 
-    def get_channels(self):
+    def get_channels(self): # TODO: refactor for readability
         guild_channels = App.get_running_app().api.get_guild_channels(App.get_running_app().current_guild)
         guild_channels = [channel for channel in guild_channels if channel['type'] != 2 and channel['type'] != 5]
         data = [{'text': channel['name'], 'channel_id': channel['id']} for channel in guild_channels]
@@ -197,16 +206,13 @@ class GCRV(RecycleView):
         self.get_channels()
 
 
-class LoginScreen(Screen):
-    pass
-
-
 class LenCordApp(App):
     sm: ScreenManager = ScreenManager()
     token: str
     api: API
     current_chat: str
     # random placeholder so it doesnt kill itself during startup
+    # TODO: fix
     current_guild: str = "1105880476738130082"  # what server even is this
     user_id: str
 
@@ -220,15 +226,9 @@ class LenCordApp(App):
     def set_screen(self, screen: str):
         self.sm.current = screen
 
-    def get_api(self):
-        self.api = API(self.token)
-
-    def get_id(self):
-        self.user_id = self.api.get_user_id()
-
     def get_ready(self):
-        self.get_api()
-        self.get_id()
+        self.api = API(self.token)
+        self.user_id = self.api.get_user_id()
         self.sm.add_widget(DirectMessageListScreen(name="dmlist"))
         self.sm.add_widget(ChannelScreen(name='channel'))
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
@@ -237,6 +237,7 @@ class LenCordApp(App):
         self.sm.add_widget(LoginScreen(name='login'))
         self.sm.current = 'login'
         Clock.max_iteration = 100  # idk, images still fuck up the layout lol
+        # TODO: fix :(
 
         return self.sm
 
