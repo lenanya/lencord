@@ -3,10 +3,10 @@ import json
 
 
 def sortByLastMessage(channels: list) -> list:
-    removed: list = [channel for channel in channels if channel.get['last_message_id'] is None]
-    nullRemovedChannels: list = [channel for channel in channels if channel.get['last_message_id'] is not None]
+    removed: list = [channel for channel in channels if channel.get('last_message_id') is None]
+    nullRemovedChannels: list = [channel for channel in channels if channel.get('last_message_id') is not None]
     
-    sortedList: list = sorted(nullRemovedChannels, key=lambda x: int(x.get['last_message_id']), reverse=True)
+    sortedList: list = sorted(nullRemovedChannels, key=lambda x: int(x.get('last_message_id')), reverse=True)
     sortedList.extend(removed)
     
     return sortedList
