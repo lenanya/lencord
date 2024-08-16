@@ -2,6 +2,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, NumericProperty
 from kivy.app import App
 
+# set shortcuts for annoying to type functions
+gRA = App.get_running_app
 
 class Guild(BoxLayout):
     text: StringProperty = StringProperty()
@@ -11,5 +13,5 @@ class Guild(BoxLayout):
     online: NumericProperty = NumericProperty()
 
     def openGuild(self) -> None:
-        App.get_running_app().setGuild(self.guildId)
-        App.get_running_app().setScreen('guild')
+        gRA().setGuild(self.guildId)
+        gRA().setScreen('guild')

@@ -10,16 +10,18 @@
         orientation: 'horizontal'
         pos_hint: {'top': 1}
         height: msgBox.height
-        width: img.width
+        width: avatar.width
         size_hint: None, None
         # TODO: add profiles
         AsyncImage:
-            id: img
-            source: root.imageLink
+            id: avatar
+            source: root.authorAvatar
             size_hint: None, None
             size: root.width / 10, root.width / 10
             fit_mode: 'scale-down'
             pos_hint: {'top': 1}
+            anim_delay: -1
+            
     BoxLayout:
         id: msgBox
         orientation: 'vertical'
@@ -29,7 +31,7 @@
             id: message
             halign: 'left'
             valign: 'top'
-            text_size: root.width - img.width, None
+            text_size: root.width - avatar.width, None
             size: self.texture_size
             size_hint: None, None
             text: root.reply + root.author + ":\n" + root.text
@@ -43,6 +45,7 @@
             size_hint: None, None
             width: root.width * 0.9
             fit_mode: 'scale-down'
+            anim_delay: -1
 
 
 # TODO: add date/time

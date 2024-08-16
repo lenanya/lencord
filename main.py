@@ -1,4 +1,5 @@
-from DiscordAPI.api_access import API
+from DiscordAPI.api_access import API, globalNameOrUsername
+import requests
 
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -10,6 +11,9 @@ from Widgets.message import Message
 from Widgets.guildchannel import GuildChannel
 from Widgets.guild import Guild
 from Widgets.directmessagechannel import DirectMessageChannel
+
+# set shortcuts for annoying to type functions
+gRA = App.get_running_app
 
 
 # yes this needs to be here
@@ -24,11 +28,11 @@ class LoginScreen(Screen):
 
 class DMRV(RecycleView):
 
-    #TODO: refactor to use get
     def getChannels(self):
-        dmChannels = App.get_running_app().api.getDirectMessageChannels()
+        dmChannels = gRA().api.getDirectMessageChannels()
         # i love list comprehensions
-        data = [{'text': channel['name'], 'channelId': channel['id']} for channel in dmChannels]
+        data = [{'text': channel.get('name'), 'channelId': channel.get('id')} for channel in dmChannels]
+        
         self.data = data
 
     def __init__(self, **kwargs):
@@ -38,16 +42,18 @@ class DMRV(RecycleView):
 
 class GRV(RecycleView):
 
-    #TODO: refactor to use get
     def getGuilds(self):
-        guilds: list = App.get_running_app().api.getGuilds()
+        guilds: list = gRA().api.getGuilds()
         iconURL: str = "https://cdn.discordapp.com/icons/"
         data: list = []
+        
         for guild in guilds:
-            name: str = guild['name']
-            guildId: str = guild['id']
-            icon: str = f"{iconURL}{guild['id']}/{guild['icon']}"
+            name: str = guild.get('name')
+            guildId: str = guild.get('id')
+            guildIcon: str = guild.get('icon')
+            icon: str = f"{iconURL}{guildId}/{guildIcon}"
             data.append({'text': name, 'guildId': guildId, 'icon': icon})
+            
         self.data = data
 
     def __init__(self, **kwargs):
@@ -69,31 +75,33 @@ class ChannelScreen(Screen):
             Factory.FilePicker().open()
 
     def on_pre_enter(self, *args):
-        App.get_running_app().drv.getMessages()
-        self.refreshEvent = Clock.schedule_interval(App.get_running_app().drv.loadNewMessages, 2)
+        gRA().drv.getMessages()
+        self.refreshEvent = Clock.schedule_interval(gRA().drv.loadNewMessages, 2)
         super().on_pre_enter(*args)
-
-    # i use App.get_running_app() way too much edit: yep
+        
     def sendMessage(self):
         messageContent: str = self.ids.messageInput.text
+        
         if messageContent == "" and not self.attachment:
             return None
+        
         self.ids.messageInput.text = ""
-        reply = App.get_running_app().drv.reply
         attachment = self.attachment
         self.attachment = None
         self.ids.attach.text = "Attach image"
-        App.get_running_app().drv.reply = None
-        App.get_running_app().drv.setReply()
-        App.get_running_app().api.sendMessage(App.get_running_app().currentChat, messageContent, reply, attachment)
+        
+        reply = gRA().drv.reply
+        gRA().drv.reply = None
+        gRA().drv.setReply()
+        gRA().api.sendMessage(gRA().currentChat, messageContent, reply, attachment)
 
     def on_leave(self, *args):
         self.refreshEvent.cancel()
-        App.get_running_app().drv.reply = None
+        gRA().drv.reply = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        App.get_running_app().channelScreen = self
+        gRA().channelScreen = self
 
 
 # i should really standardise the recycleviews edit: yep
@@ -104,51 +112,63 @@ class DRV(RecycleView):
     reply: dict|None = None
 
     def setReply(self):
-        texture_size = App.get_running_app().channelScreen.ids.reply.texture_size
-        # what the fuck
-        App.get_running_app().channelScreen.ids.reply.size = texture_size if self.reply else (0, 0)
+        textureSize = gRA().channelScreen.ids.reply.texture_size
+        gRA().channelScreen.ids.reply.size = textureSize if self.reply else (0, 0)
+        
         if self.reply:
-            App.get_running_app().channelScreen.ids.reply.text = "Replying to: " + self.reply['replyAuthor']
+            gRA().channelScreen.ids.reply.text = "Replying to: " + self.reply.get('replyAuthor')
         else:
-            App.get_running_app().channelScreen.ids.reply.text = ""
+            gRA().channelScreen.ids.reply.text = ""
 
-    # *args needs to be there cuz it gets called by Clock with random arguments which caused problems
     def getMessages(self, *args):
-        _ = args  # so i just void it here :3
-        # what is it with these long ahh lines
-        self.messages = App.get_running_app().api.getChannelMessages(App.get_running_app().currentChat, 100)
+        _ = args
+        self.messages = gRA().api.getChannelMessages(gRA().currentChat, 100)
+        
         if not self.messages:
             return None
         if type(self.messages) is not list:
             return None
-        self.newestMessageId = self.messages[0]['id']
+        
+        self.newestMessageId = self.messages[0].get('id')
         self.updateData()
     
-    # TODO: refactor for readability
+    @staticmethod # not used but maybe for future 
+    def imageOrGIFReplace(url: str) -> str:
+        contentType: str = requests.get(url).headers.get('Content-Type')
+        if contentType.endswith("gif"):
+            return "http://celestynya.com/images/gifNotLoaded.png"
+        return url
+    
     def updateData(self):
         messages: list = self.messages
         data: list = []
+        avatarBaseLink: str = "https://cdn.discordapp.com/avatars"
 
         for message in messages:
-            author: str|None = message['author'].get('global_name', None)
-            if not author:
-                author = message['author'].get('username', 'UNKNOWN_USER_ERROR')  # i hate json
-            txt: str = message.get('content', '')
+            author: dict = message.get('author')
+            authorName: str = globalNameOrUsername(author)
+            authorID: str = author.get('id')
+            authorAvatar: str = author.get('avatar')
+            # maybe later
+            # authorAvatarLink: str = self.imageOrGIFReplace(f"{avatarBaseLink}/{authorID}/{authorAvatar}")
+            authorAvatarLink: str = f"{avatarBaseLink}/{authorID}/{authorAvatar}"
+            
+            content: str = message.get('content', '')
+            messageId: str = message.get('id')
             messageReference: dict = message.get('message_reference', {})
-            reply: str = App.get_running_app().api.getReferencedMessage(messageReference, messages)
-            messageId: str = message['id']
-            image: str = f"https://cdn.discordapp.com/avatars/{message['author']['id']}/{message['author']['avatar']}"
-            imageHeight: int = 0
-            # placeholder cuz something needs to be there idk edit: why
-            # TODO: fix
-            attachment: str = ("https://cdn.discordapp.com/attachments/1143229203551096842/1252962153556611173"
-                        "/Screenshot_20240619_142408_Pydroid_3.jpg?ex=6674c830&is=667376b0&hm"
-                        "=13e97ac0b5ac6391dc957f1a0a96cb04bb7a2dfe1750c4b14559937585f4108f&")
+            referencedMessage: dict = message.get('referenced_message', {})
+            reply: str = gRA().api.getReferencedMessage(messageReference, referencedMessage)
+            
             mentions: list = message.get('mentions', [])
+            attachmentLink: str = ("http://celestynya.com/images/gifNotLoaded.png")
+            
+            imageHeight: int = 0
             backgroundColor: list = [0.1, 0.1, 0.1, 0.5]
+            
             for user in mentions:
-                if user.get('id', 'ERROR') == App.get_running_app().userId:
+                if user.get('id', 'ERROR') == gRA().userId:
                     backgroundColor = [0.3, 0.1, 0.3, 0.5]
+                    break
 
             for attachment in message.get('attachments', []):
                 if attachment.get('content_type', 'NOTIMAGE').startswith('image'):
@@ -161,51 +181,60 @@ class DRV(RecycleView):
                         ratio = imageWidth / (self.width * 0.9)
                         imageHeight = imageHeight / ratio
 
-                    attachment = attachment['url']
-            data.append({'reply': reply, 'author': author, 'text': txt, 'messageId': messageId, 'imageLink': image,
-                         'imageHeight': imageHeight, 'attachmentLink': attachment, 'backgroundColor': backgroundColor})
+                    # attachmentLink = self.imageOrGIFReplace(attachment.get('url'))
+                    attachmentLink = attachment.get('url')
+                    
+            data.append({'reply': reply, 'author': authorName, 
+                         'text': content, 'messageId': messageId, 
+                         'authorAvatar': authorAvatarLink,
+                         'imageHeight': imageHeight, 
+                         'attachmentLink': attachmentLink, 
+                         'backgroundColor': backgroundColor})
+        
         self.data = data
 
-    # i love voiding args
     def loadNewMessages(self, *args):
         _ = args
-        new_messages: list|None  # "or None" is my saviour edit: its |None lol
-        chat = App.get_running_app().currentChat
+        newMessages: list|None
+        chat = gRA().currentChat
+        
         if not self.messages:
-            new_messages = App.get_running_app().api.getChannelMessages(chat, 10)
+            newMessages = gRA().api.getChannelMessages(chat, 10)
         else:
-            new_messages = App.get_running_app().api.getChannelMessages(chat, 10, self.newestMessageId)
-        if new_messages:
-            self.messages = new_messages + self.messages
-            self.messages = self.messages[:100]
-            self.newestMessageId = self.messages[0]['id']
-            self.updateData() # TODO: refactor for readability
+            newMessages = gRA().api.getChannelMessages(chat, 10, self.newestMessageId)
+        if newMessages:
+            self.messages = (newMessages + self.messages)[:100]
+            self.newestMessageId = self.messages[0].get('id', None)
+            
+            self.updateData()
 
     def __init__(self, **kwargs):
-        App.get_running_app().drv = self
-        super().__init__(**kwargs)  # i dont like super().__init__() idk why
+        gRA().drv = self
+        super().__init__(**kwargs)
 
 
 # tried putting this in its own file but it just completely broke lol
 class GuildChannelListScreen(Screen):
     def on_pre_enter(self, *args):
-        App.get_running_app().gcrv.getChannels()
+        gRA().gcrv.getChannels()
         super().on_pre_enter(*args)
 
 
 # you can never have enough recycleviews (i hate them)
 class GCRV(RecycleView):
 
-    def getChannels(self): # TODO: refactor for readability
-        guildChannels = App.get_running_app().api.getGuildChannels(App.get_running_app().currentGuild)
-        guildChannels = [channel for channel in guildChannels if channel['type'] != 2 and channel['type'] != 5]
-        data = [{'text': channel['name'], 'channelId': channel['id']} for channel in guildChannels]
+    def getChannels(self):
+        guildChannels = gRA().api.getGuildChannels(gRA().currentGuild)
+        guildChannels = [
+            channel for channel in guildChannels if channel.get('type') != 2 and channel.get('type') != 5
+            ]
+        data = [{'text': channel.get('name'), 'channelId': channel.get('id')} for channel in guildChannels]
+        
         self.data = data
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        App.get_running_app().gcrv = self
-        self.getChannels()
+        gRA().gcrv = self
 
 
 class LenCordApp(App):
@@ -213,12 +242,9 @@ class LenCordApp(App):
     token: str
     api: API
     currentChat: str
-    # random placeholder so it doesnt kill itself during startup
-    # TODO: fix
-    currentGuild: str = "1105880476738130082"  # what server even is this edit: its mine
+    currentGuild: str = ""
     userId: str
 
-    # why are all of these functions what did i smoke edit: you drank
     def setChannel(self, channelId: str):
         self.currentChat = channelId
     
