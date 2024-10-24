@@ -261,8 +261,12 @@ class LenCordApp(App):
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
 
     def build(self):
-        self.sm.add_widget(LoginScreen(name='login'))
-        self.sm.current = 'login'
+        if len(sys.argv) < 2:
+            self.sm.add_widget(LoginScreen(name='login'))
+            self.sm.current = 'login'
+        else:
+            with open("token.txt", "r") as f:
+                self.token = f.read()
         Clock.max_iteration = 100  # idk, images still fuck up the layout lol
         # TODO: fix :(
 
