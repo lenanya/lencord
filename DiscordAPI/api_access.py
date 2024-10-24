@@ -25,6 +25,8 @@ def globalNameOrUsername(user: dict) -> str:
 def getDirectMessageChannelName(recipients: list) -> str:
     name: str
     
+    if not recipients:
+        return "ERROR"
     if len(recipients) < 2:
         name = globalNameOrUsername(recipients[0])
     else:
