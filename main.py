@@ -52,7 +52,7 @@ class GRV(RecycleView):
             name: str = guild.get('name')
             guildId: str = guild.get('id')
             guildIcon: str = guild.get('icon')
-            icon: str = f"{iconURL}{guildId}/{guildIcon}"
+            icon: str = f"{iconURL}{guildId}/{guildIcon}.png"
             data.append({'text': name, 'guildId': guildId, 'icon': icon})
             
         self.data = data
@@ -137,7 +137,7 @@ class DRV(RecycleView):
     def imageOrGIFReplace(url: str) -> str:
         contentType: str = requests.get(url).headers.get('Content-Type')
         if contentType.endswith("gif"):
-            return "http://celestynya.com/images/gifNotLoaded.png"
+            return url+".png"
         return url
     
     def updateData(self):
@@ -151,8 +151,8 @@ class DRV(RecycleView):
             authorID: str = author.get('id')
             authorAvatar: str = author.get('avatar')
             # maybe later
-            # authorAvatarLink: str = self.imageOrGIFReplace(f"{avatarBaseLink}/{authorID}/{authorAvatar}")
-            authorAvatarLink: str = f"{avatarBaseLink}/{authorID}/{authorAvatar}"
+            authorAvatarLink: str = self.imageOrGIFReplace(f"{avatarBaseLink}/{authorID}/{authorAvatar}")
+            #authorAvatarLink: str = f"{avatarBaseLink}/{authorID}/{authorAvatar}"
             
             content: str = message.get('content', '')
             messageId: str = message.get('id')
