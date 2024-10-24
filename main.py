@@ -137,7 +137,7 @@ class DRV(RecycleView):
     def imageOrGIFReplace(url: str) -> str:
         contentType: str = requests.get(url).headers.get('Content-Type')
         if contentType.endswith("gif"):
-            return url+".png"
+            return url.replace(".gif",".png")
         return url
     
     def updateData(self):
@@ -151,8 +151,9 @@ class DRV(RecycleView):
             authorID: str = author.get('id')
             authorAvatar: str = author.get('avatar')
             # maybe later
-            authorAvatarLink: str = self.imageOrGIFReplace(f"{avatarBaseLink}/{authorID}/{authorAvatar}")
+            #authorAvatarLink: str = self.imageOrGIFReplace(f"{avatarBaseLink}/{authorID}/{authorAvatar}")
             #authorAvatarLink: str = f"{avatarBaseLink}/{authorID}/{authorAvatar}"
+            authorAvatarLink: str = f"{avatarBaseLink}/{authorID}/{authorAvatar}.png"
             
             content: str = message.get('content', '')
             messageId: str = message.get('id')
