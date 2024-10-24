@@ -89,8 +89,7 @@ class API:
         jsonPayload: dict = {'content': content}
 
         if reply:
-            jsonPayload['message_reference'] = {"message_id": reply.get('reply_id')}
-
+            jsonPayload['message_reference'] = {"message_id": reply.get('replyId')}
         if attachment:
             filePath: str = attachment
             fileName: str = filePath[-filePath[::-1].find("/"):]
@@ -110,7 +109,8 @@ class API:
         else:
             files = {"payload_json": (None, json.dumps(jsonPayload), "application/json")}
 
-        _ = requests.post(channelURL, files=files, headers=headers)
+        response = requests.post(channelURL, files=files, headers=headers)
+        print(json.dumps(response.json()))
 
     def getGuilds(self) -> list:
         guildsURL: str = "https://discord.com/api/v10/users/@me/guilds"

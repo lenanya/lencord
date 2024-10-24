@@ -190,7 +190,6 @@ class DRV(RecycleView):
                          'imageHeight': imageHeight, 
                          'attachmentLink': attachmentLink, 
                          'backgroundColor': backgroundColor})
-        
         self.data = data
 
     def loadNewMessages(self, *args):
