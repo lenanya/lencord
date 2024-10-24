@@ -13,3 +13,9 @@
                 app.getReady()
                 app.sm.current = 'dmlist'
             text: 'Login'
+        Button:
+            on_press:
+                app.get_token_from_file()
+                app.getReady()
+                app.sm.current = 'dmlist'
+            text: 'Login with token file'

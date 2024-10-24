@@ -248,6 +248,12 @@ class LenCordApp(App):
     def setChannel(self, channelId: str):
         self.currentChat = channelId
     
+    def get_token_from_file(self):
+        with open("token.txt", "r") as f:
+                self.token = f.read().strip("\n")
+                f.close()
+                print(self.token)
+    
     def setGuild(self, guild_id: str):
         self.currentGuild = guild_id
         
@@ -265,6 +271,7 @@ class LenCordApp(App):
         if "debug" in sys.argv:
             with open("token.txt", "r") as f:
                 self.token = f.read().strip("\n")
+            f.close()
             self.getReady()
             self.sm.current = 'dmlist'
         else:
