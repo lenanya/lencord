@@ -254,6 +254,10 @@ class LenCordApp(App):
     def setScreen(self, screen: str):
         self.sm.current = screen
 
+    def get_token_from_file(self):
+        with open("token.txt", "r") as f:
+                self.token = f.read().strip("\n")
+
     def getReady(self):
         self.api = API(self.token)
         self.userId = self.api.getUserId()
@@ -263,8 +267,7 @@ class LenCordApp(App):
 
     def build(self):
         if "debug" in sys.argv:
-            with open("token.txt", "r") as f:
-                self.token = f.read().strip("\n")
+            self.get_token_from_file()
             self.getReady()
             self.sm.current = 'dmlist'
         else:
