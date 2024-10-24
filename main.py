@@ -1,5 +1,6 @@
 from DiscordAPI.api_access import API, globalNameOrUsername
 import requests
+import sys
 
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -261,12 +262,15 @@ class LenCordApp(App):
         self.sm.add_widget(GuildChannelListScreen(name='guild'))
 
     def build(self):
-        if len(sys.argv) < 2:
+        if "debug" in sys.argv:
+            with open("token.txt", "r") as f:
+                self.token = f.read().strip("\n")
+            self.getReady()
+            self.sm.current = 'dmlist'
+        else:
             self.sm.add_widget(LoginScreen(name='login'))
             self.sm.current = 'login'
-        else:
-            with open("token.txt", "r") as f:
-                self.token = f.read()
+
         Clock.max_iteration = 100  # idk, images still fuck up the layout lol
         # TODO: fix :(
 
