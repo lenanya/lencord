@@ -76,7 +76,9 @@ class API:
             return ''
         
         message: dict = referencedMessage
-        author: str = globalNameOrUsername(message['author'])
+        if not message:
+            return 'urmom'
+        author: str = globalNameOrUsername(message.get('author', 'authornamefucky'))
         content: str = message.get('content', '')
         
         messageReply: str = content[:20].replace("\n", " ")
